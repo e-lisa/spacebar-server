@@ -22,7 +22,6 @@ import {
     AutomodRule,
     AutomodTriggerTypes,
     Channel,
-    cleanNestedReponse,
     Config,
     DiscordApiErrors,
     DmChannelDTO,
