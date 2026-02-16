@@ -242,10 +242,10 @@ router.get(
 			which causes errors when, say, the `application` property is `null`.
 			**/
 
-            // for (var curr in x) {
-            // 	if (x[curr] === null)
-            // 		delete x[curr];
-            // }
+            for (var curr in x) {
+                if (x[curr] === null)
+                    delete x[curr];
+            }
 
             return x;
         });
