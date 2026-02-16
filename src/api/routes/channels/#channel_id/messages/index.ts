@@ -250,8 +250,10 @@ router.get(
                     x.interaction_metadata!.user = x.interaction!.user = await User.findOneOrFail({ where: { id: (x as Message).interaction_metadata!.user_id } });
                 }),
         );
+        console.log(ret);
+        console.log('cleaning response');
         for (var curr in ret) {
-            if (ret[curr] === null)
+            if (ret[curr] === null or ret[curr] === undefined)
                 console.log("value " + ret[curr]);
                 delete ret[curr];
         }
