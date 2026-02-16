@@ -82,6 +82,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
         if (!this.session_id) console.log("[Gateway] Unknown session id, dumping to unknown folder");
     }
 
+    console.log(data);
     check.call(this, PayloadSchema, data);
 
     const OPCodeHandler = OPCodeHandlers[data.op];

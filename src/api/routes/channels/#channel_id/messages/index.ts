@@ -251,11 +251,6 @@ router.get(
                     x.interaction_metadata!.user = x.interaction!.user = await User.findOneOrFail({ where: { id: (x as Message).interaction_metadata!.user_id } });
                 }),
         );
-        console.log(ret);
-        console.log('cleaning response');
-        ret = cleanNestedReponse(ret);
-        console.log('after:');
-        console.log(ret);
         return res.json(ret);
     },
 );
