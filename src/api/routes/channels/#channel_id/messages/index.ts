@@ -187,7 +187,7 @@ router.get(
         await Message.fillReplies(messages);
         const endpoint = Config.get().cdn.endpointPublic;
 
-        const ret = messages.map((x: Message) => {
+        let ret = messages.map((x: Message) => {
             x = x.toJSON();
 
             (x.reactions || []).forEach((y: Partial<Reaction>) => {
