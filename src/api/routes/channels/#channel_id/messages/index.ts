@@ -241,7 +241,8 @@ router.get(
 			Some clients ( discord.js ) only check if a property exists within the response,
 			which causes errors when, say, the `application` property is `null`.
 			**/
-
+            console.log('before:')
+            console.log(ret);
             for (var curr in x) {
                 if (x[curr] === null)
                     delete x[curr];
@@ -249,8 +250,9 @@ router.get(
 
             return x;
         });
-        //console.log(ret);
-
+        console.log('after:')
+        console.log(ret);
+        console.log('after1:')
         await Promise.all(
             ret
                 .filter((x: MessageCreateSchema) => x.interaction_metadata && !x.interaction_metadata.user)
@@ -258,7 +260,7 @@ router.get(
                     x.interaction_metadata!.user = x.interaction!.user = await User.findOneOrFail({ where: { id: (x as Message).interaction_metadata!.user_id } });
                 }),
         );
-
+        console.log(ret);
         return res.json(ret);
     },
 );
