@@ -253,7 +253,7 @@ router.get(
         );
         console.log(ret);
         console.log('cleaning response');
-        ret = cleanNestedReponse(ret);
+        //ret = cleanNestedReponse(ret);
         console.log('after:');
         console.log(ret);
         return res.json(ret);
