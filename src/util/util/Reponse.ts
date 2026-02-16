@@ -1,4 +1,4 @@
-export function cleanNestedReponse(obj) {
+export function cleanNestedReponse(obj: any) {
     for (const key in obj) {
         if (typeof obj[key] === 'object') {
             obj[key] = cleanNestedReponse(obj[key]);
