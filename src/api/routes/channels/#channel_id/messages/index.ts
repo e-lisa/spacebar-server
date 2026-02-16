@@ -22,6 +22,7 @@ import {
     AutomodRule,
     AutomodTriggerTypes,
     Channel,
+    cleanNestedReponse,
     Config,
     DiscordApiErrors,
     DmChannelDTO,
@@ -255,7 +256,7 @@ router.get(
         for (var curr in ret) {
             if (ret[curr] === null || ret[curr] === undefined) {
                 console.log("value " + ret[curr]);
-                delete ret[curr];
+
             }
         }
 
