@@ -253,9 +253,10 @@ router.get(
         console.log(ret);
         console.log('cleaning response');
         for (var curr in ret) {
-            if (ret[curr] === null || ret[curr] === undefined)
+            if (ret[curr] === null || ret[curr] === undefined) {
                 console.log("value " + ret[curr]);
                 delete ret[curr];
+            }
         }
 
         console.log('after:');
