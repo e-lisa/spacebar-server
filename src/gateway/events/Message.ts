@@ -25,7 +25,7 @@ import WS from "ws";
 import OPCodeHandlers from "../opcodes";
 import { check } from "../opcodes/instanceOf";
 import { PayloadSchema } from "@spacebar/schemas";
-import { cleanNestedReponse } from "@spacebar/util";
+//import { cleanNestedReponse } from  from "@spacebar/util";
 
 const bigIntJson = BigIntJson({ storeAsString: true });
 
@@ -83,8 +83,6 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
         if (!this.session_id) console.log("[Gateway] Unknown session id, dumping to unknown folder");
     }
 
-    data = cleanNestedReponse(data);
-    console.log(data);
     check.call(this, PayloadSchema, data);
 
     const OPCodeHandler = OPCodeHandlers[data.op];

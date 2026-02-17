@@ -115,6 +115,9 @@ router.patch(
 
         postHandleMessage(new_message);
 
+        console.log("LAMO LAMO");
+        console.log(new_message.toJSON());
+
         // TODO: a DTO?
         return res.json({
             ...new_message.toJSON(),
