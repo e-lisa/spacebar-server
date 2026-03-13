@@ -44,25 +44,22 @@ export class SMTPEmailClient extends BaseEmailClient {
                 '[Email] You have to configure either "email_senderAddress" or "general_correspondenceEmail" for emails to work. The configured value is used as the sender address.',
             );
 
-        /* Allow for SMTP relays with and without username/passwords (IE: Smarthosts/Local Relays, etc) */
-        let nodemailer_opts: unknown;
-        if (!username || !password) {
-            nodemailer_opts = {
-                host: host,
-                port: port,
-                secure: secure,
-            };
-        } else {
-            nodemailer_opts = {
-                host: host,
-                port: port,
-                secure: secure,
-                auth: {
-                    user: username,
-                    pass: password,
-                },
-            };
-        }
+        /* Allow for SMTP relays with and without username/passwords (IE: Smarthosts/Local Relays, etc)
+           NOTE:  When secure is set to false, we must also set ignoreTLS or nodemailer will still try to use STARTTLS */
+        const nodemailer_opts = {
+            host: host,
+            port: port,
+            secure: secure,
+            ...(secure ? {} : { ignoreTLS: true }),
+            ...(username && password
+                ? {
+                      auth: {
+                          user: username,
+                          pass: password,
+                      },
+                  }
+                : {}),
+        };
 
         // construct the transporter
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
