@@ -56,7 +56,7 @@ const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
 
-const LINK_REGEX = /<?https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)>?/g;
+const LINK_REGEX = /<?https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)>?/g;
 
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
     const channel = await Channel.findOneOrFail({
@@ -65,14 +65,14 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     });
     if (!channel || !opts.channel_id) throw new HTTPError("Channel not found", 404);
 
-    let permission: undefined | Permissions;
+    let permission: null | Permissions = null;
     const limit = channel.rate_limit_per_user;
 
     if (limit) {
         const lastMsgTime = (await Message.findOne({ where: { channel_id: channel.id, author_id: opts.author_id }, select: { timestamp: true }, order: { timestamp: "DESC" } }))
             ?.timestamp;
         if (lastMsgTime && Date.now() - limit * 1000 < +lastMsgTime) {
-            permission ||= await getPermission(opts.author_id, channel.guild_id, channel);
+            permission = await getPermission(opts.author_id, channel.guild_id, channel);
             //FIXME MANAGE_MESSAGES and MANAGE_CHANNELS will need to be removed once they're gone as checks
             if (!permission.has("MANAGE_MESSAGES") && !permission.has("MANAGE_CHANNELS") && !permission.has("BYPASS_SLOWMODE")) {
                 throw DiscordApiErrors.SLOWMODE_RATE_LIMIT;
@@ -115,7 +115,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     }
     if (!ephermal) {
         channel.last_message_id = message.id;
-        channel.save();
+        await channel.save();
     }
 
     if (cloudAttachments && cloudAttachments.length > 0) {
@@ -228,6 +228,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         }
     } else {
         permission ||= await getPermission(opts.author_id, channel.guild_id, channel);
+        if (permission === null) throw new HTTPError("permission was null after getPermission", 500);
         permission.hasThrow("SEND_MESSAGES");
         if (permission.cache.member) {
             message.member = permission.cache.member;
@@ -238,7 +239,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
             permission.hasThrow("READ_MESSAGE_HISTORY");
             // code below has to be redone when we add custom message routing
             if (message.guild_id !== null) {
-                const guild = await Guild.findOneOrFail({
+                await Guild.findOneOrFail({
                     where: { id: channel.guild_id },
                 });
                 if (!opts.message_reference.guild_id) opts.message_reference.guild_id = channel.guild_id;
@@ -546,7 +547,7 @@ export async function postHandleMessage(message: Message) {
             const normalized = normalizeUrl(link);
             currentNormalizedUrls.add(normalized);
         } catch (e) {
-            continue;
+            /* empty */
         }
     }
     if (data.embeds != undefined) {
@@ -578,7 +579,6 @@ export async function postHandleMessage(message: Message) {
             }
         } catch (e) {
             // Invalid URL, skip
-            continue;
         }
     }
 

@@ -20,7 +20,7 @@ import { HTTPError } from "lambert-server";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { DmChannelDTO } from "../dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent, ThreadCreateEvent, ThreadMembersUpdateEvent } from "../interfaces";
-import { InvisibleCharacters, Snowflake, emitEvent, getPermission, trimSpecial, Permissions, BitField, Config, DiscordApiErrors } from "../util";
+import { InvisibleCharacters, Snowflake, emitEvent, getPermission, trimSpecial, Permissions, Config, DiscordApiErrors } from "../util";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Invite } from "./Invite";
@@ -32,7 +32,7 @@ import { User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
 import { Member } from "./Member";
-import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, ChannelType, PublicUserProjection, ThreadMetadata } from "@spacebar/schemas";
+import { ChannelPermissionOverwrite, ChannelType, PublicUserProjection, ThreadMetadata } from "@spacebar/schemas";
 import { OrmUtils } from "../imports";
 import { ThreadMember } from "./ThreadMember";
 
@@ -197,7 +197,7 @@ export class Channel extends BaseClass {
             skipEventEmit?: boolean;
             skipNameChecks?: boolean;
         },
-    ) {
+    ): Promise<Channel> {
         if (!opts?.skipPermissionCheck) {
             // Always check if user has permission first
             const permissions = await getPermission(user_id, channel.guild_id);
@@ -281,7 +281,8 @@ export class Channel extends BaseClass {
             // total_message_sent: 0,
         };
 
-        const ret = Channel.create(channel);
+        // TODO: figure out why the generic is required here
+        const ret = Channel.create<Channel>(channel);
 
         await Promise.all([
             ret.save(),

@@ -64,11 +64,6 @@ import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, Priva
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
 
-function logAuth(message: string) {
-    if (process.env.LOG_AUTH != "true") return;
-    console.log(`[Gateway/Auth] ${message}`);
-}
-
 export async function onIdentify(this: WebSocket, data: Payload) {
     const totalSw = Stopwatch.startNew();
     const taskSw = Stopwatch.startNew();
@@ -656,7 +651,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             private_channels: channels,
             presences: [], // TODO: Send actual data
             session_id: this.session_id,
-            country_code: user.settings!.locale, // TODO: do ip analysis instead
+            country_code: this.session?.last_seen_location_info?.country_code ?? user.settings!.locale,
             users: Array.from(users),
             merged_members: merged_members,
             sessions: allSessions,

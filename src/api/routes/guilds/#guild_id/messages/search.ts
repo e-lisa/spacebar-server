@@ -16,8 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import { route } from "@spacebar/api";
 import { Channel, FieldErrors, Member, Message, Snowflake, getPermission } from "@spacebar/util";
 import { Request, Response, Router } from "express";
@@ -58,7 +56,7 @@ router.get(
         if (parsedLimit < 1 || parsedLimit > 100) throw new HTTPError("limit must be between 1 and 100", 422);
 
         if (sort_order) {
-            if (typeof sort_order != "string" || ["desc", "asc"].indexOf(sort_order) == -1)
+            if (["desc", "asc"].indexOf(sort_order) == -1)
                 throw FieldErrors({
                     sort_order: {
                         message: "Value must be one of ('desc', 'asc').",
@@ -68,7 +66,7 @@ router.get(
         }
         if (channel_id) {
             const ids = new Set(channel_id instanceof Array ? channel_id : [channel_id]);
-            Promise.all(
+            await Promise.all(
                 [...ids].map(async (id) => {
                     const permissions = await getPermission(req.user_id, req.params.guild_id as string, id);
                     permissions.hasThrow("VIEW_CHANNEL");

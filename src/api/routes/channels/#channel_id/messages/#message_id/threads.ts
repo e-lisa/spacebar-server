@@ -17,7 +17,7 @@
 */
 
 import { route, sendMessage } from "@spacebar/api";
-import { Message, Channel, emitEvent, User, MessageUpdateEvent, Recipient } from "@spacebar/util";
+import { Message, Channel, emitEvent, User, MessageUpdateEvent } from "@spacebar/util";
 import { MessageThreadCreationSchema, ChannelType, MessageType } from "@spacebar/schemas";
 
 import { Request, Response, Router } from "express";
@@ -89,7 +89,7 @@ router.post(
             },
             author_id: user.id,
         });
-        sendMessage({
+        await sendMessage({
             channel_id: channel.id,
             type: MessageType.THREAD_CREATED,
             content: thread.name,

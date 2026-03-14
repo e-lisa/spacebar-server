@@ -17,11 +17,9 @@
 */
 
 import { ButtonStyle, InteractionCallbackSchema, InteractionCallbackType, MessageComponentType, MessageType } from "@spacebar/schemas";
-import { route } from "@spacebar/api";
-import { MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
+import { route, sendMessage } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { emitEvent, FieldErrors, InteractionSuccessEvent, uploadFile, Attachment, pendingInteractions, User } from "@spacebar/util";
-import { sendMessage } from "../../../../util/handlers/Message";
+import { emitEvent, FieldErrors, InteractionSuccessEvent, pendingInteractions, User } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
 
@@ -77,7 +75,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 
     clearTimeout(interaction.timeout);
 
-    emitEvent({
+    await emitEvent({
         event: "INTERACTION_SUCCESS",
         user_id: interaction?.userId,
         data: {

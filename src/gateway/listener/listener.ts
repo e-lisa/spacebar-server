@@ -31,11 +31,9 @@ import {
     Recipient,
     Relationship,
 } from "@spacebar/util";
-import { CLOSECODES, OPCODES } from "../util/Constants";
-import { Send } from "../util/Send";
+import { CLOSECODES, OPCODES, Send } from "../util";
 import { WebSocket } from "@spacebar/gateway";
 import { Channel as AMQChannel } from "amqplib";
-import * as console from "node:console";
 import { PublicMember, RelationshipType } from "@spacebar/schemas";
 import { bgRedBright } from "picocolors";
 
@@ -240,7 +238,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
             break;
         case "GUILD_MEMBER_UPDATE":
             if (!this.member_events[data.user.id]) break;
-            this.member_events[data.user.id]();
+            await this.member_events[data.user.id]();
             break;
         case "RELATIONSHIP_REMOVE":
         case "CHANNEL_DELETE":
@@ -266,7 +264,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
             this.events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
             break;
         case "GUILD_CREATE":
-            Promise.all([
+            await Promise.all([
                 ...data.channels.map(async ({ id }: { id: string }) => {
                     this.events[id] = await listenEvent(id, consumer, listenOpts);
                 }),

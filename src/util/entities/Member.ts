@@ -21,15 +21,13 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, Index, JoinColumn, JoinTabl
 import { Ban, Channel, PublicGuildRelations } from ".";
 import { ReadyGuildDTO } from "../dtos";
 import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent, MessageCreateEvent } from "../interfaces";
-import { Config, emitEvent } from "../util";
-import { DiscordApiErrors } from "../util/Constants";
+import { Config, emitEvent, DiscordApiErrors } from "../util";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Message } from "./Message";
 import { Role } from "./Role";
 import { User } from "./User";
-import { AvatarDecorationData, Collectibles, DisplayNameStyle, PrimaryGuild, PublicMember, PublicMemberProjection, UserGuildSettings } from "@spacebar/schemas";
-import { JsonNumber } from "../util/Decorators";
+import { AvatarDecorationData, Collectibles, DisplayNameStyle, PublicMember, PublicMemberProjection, UserGuildSettings } from "@spacebar/schemas";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
     "id",
