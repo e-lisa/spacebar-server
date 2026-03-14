@@ -34,7 +34,7 @@ export class SMTPEmailClient extends BaseEmailClient {
             return;
         }
         // get configuration
-        const { host, port, secure, starttls, allowInsecure, username, password } = Config.get().email.smtp;
+        const { host, port, secure, username, password } = Config.get().email.smtp;
 
         // ensure all required configuration values are set
         if (!host || !port || secure === null) return console.error("[Email] SMTP has not been configured correctly.");
@@ -50,19 +50,12 @@ export class SMTPEmailClient extends BaseEmailClient {
             host: host,
             port: port,
             secure: secure,
-            ...(starttls ? {} : { ignoreTLS: true }),
+            ...(secure ? {} : { ignoreTLS: true }),
             ...(username && password
                 ? {
                       auth: {
                           user: username,
                           pass: password,
-                      },
-                  }
-                : {}),
-            ...(allowInsecure
-                ? {
-                      tls: {
-                          rejectUnauthorized: false,
                       },
                   }
                 : {}),
