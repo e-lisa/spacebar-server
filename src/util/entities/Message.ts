@@ -287,7 +287,11 @@ export class Message extends BaseClass {
             webhook: this.webhook ?? undefined,
             interaction: this.interaction ?? undefined,
             interaction_metadata: this.interaction_metadata ?? undefined,
-            reactions: this.reactions ?? undefined,
+            reactions:
+                this.reactions?.map((reaction) => ({
+                    ...reaction,
+                    me: false,
+                })) ?? undefined,
             sticker_items: this.sticker_items ?? undefined,
             message_reference: this.message_reference ?? undefined,
             author: {
