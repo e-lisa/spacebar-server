@@ -34,7 +34,7 @@ export class SMTPEmailClient extends BaseEmailClient {
             return;
         }
         // get configuration
-        const { host, port, secure, username, password } = Config.get().email.smtp;
+        const { host, port, secure, starttls, allowInsecure, username, password } = Config.get().email.smtp;
 
         // ensure all required configuration values are set
         if (!host || !port || secure === null) return console.error("[Email] SMTP has not been configured correctly.");
@@ -44,13 +44,19 @@ export class SMTPEmailClient extends BaseEmailClient {
                 '[Email] You have to configure either "email_senderAddress" or "general_correspondenceEmail" for emails to work. The configured value is used as the sender address.',
             );
 
-        /* Allow for SMTP relays with and without username/passwords (IE: Smarthosts/Local Relays, etc)
-           NOTE:  When secure is set to false, we must also set ignoreTLS or nodemailer will still try to use STARTTLS */
+        /* Allow for SMTP relays with and without username/passwords (IE: Smarthosts/Local Relays, etc) */
         const nodemailer_opts = {
             host: host,
             port: port,
             secure: secure,
-            ...(secure ? {} : { ignoreTLS: true }),
+            ...(starttls ? { requireTLS: true } : { ignoreTLS: true }),
+            ...(allowInsecure
+                ? {
+                      tls: {
+                          rejectUnauthorized: false,
+                      },
+                  }
+                : {}),
             ...(username && password
                 ? {
                       auth: {
